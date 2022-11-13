@@ -1,16 +1,19 @@
-import { FETCH_MESSAGES, POST_MESSAGE } from "../actions";
+import { FETCH_MESSAGES, MESSAGE_POSTED, CHANNEL_SELECTED } from '../actions';
 
-const messageListReducer = (state = null, action) => {
+export default function(state = null, action) {
   switch (action.type) {
-    case FETCH_MESSAGES:
+    case FETCH_MESSAGES: {
       return action.payload.messages;
-    case POST_MESSAGE:
-      const copyState = state.slice(0);
-      copyState.push(action.payload);
-      return copyState;
+    }
+    case MESSAGE_POSTED: {
+      const copiedState = state.slice(0);
+      copiedState.push(action.payload);
+      return copiedState;
+    }
+    case CHANNEL_SELECTED: {
+      return []; // Channel has changed. Clearing view.
+    }
     default:
       return state;
   }
-};
-
-export default messageListReducer;
+}

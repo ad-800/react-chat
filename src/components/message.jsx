@@ -1,10 +1,15 @@
-import React from "react";
+import React from 'react';
 
 const Message = (props) => {
+  const { created_at, author, content } = props.message;
+  const time = new Date(created_at).toLocaleTimeString();
   return (
-    <div>
-      <h2>{props.message.author}</h2>
-      <p>{props.message.content}</p>
+    <div className="message-container">
+      <i className="author">
+        <span>{author}</span>
+        <small>{time}</small>
+      </i>
+      <p>{content}</p>
     </div>
   );
 };

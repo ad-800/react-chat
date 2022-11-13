@@ -1,35 +1,47 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import { postMessage } from '../actions';
+import { connect } from 'react-redux';
+import { createMessage } from '../actions/index';
 
 class MessageForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      value: ''
-    };
+    this.state = { value: '' };
   }
 
-  handleChange = (e) => {
-    this.setState({ value: e.target.value });
+  componentDidMount() {
+    this.messageBox.focus();
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.postMessage(this.props.currentUser, this.props.selectedChannel, this.props.value);
-    this.setState({ value: '' });
+  handleChange = (event) => {
+    this.setState({ value: event.target.value });
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.props.createMessage(this.props.selectedChannel, this.props.currentUser, this.state.value);
+    this.setState({ value: '' }); // Reset message input
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <textarea type="text" value={this.state.value} onChange={this.handleChange} />
-        <input type="submit" value="Submit" />
+      <form onSubmit={this.handleSubmit} className="channel-editor">
+        <input
+          ref={(input) => { this.messageBox = input; }}
+          type="text"
+          className="form-control"
+          autoComplete="off"
+          value={this.state.value}
+          onChange={this.handleChange}
+        />
+        <button type="submit">Send</button>
       </form>
     );
   }
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ createMessage }, dispatch);
 }
 
 function mapStateToProps(state) {
@@ -37,10 +49,6 @@ function mapStateToProps(state) {
     currentUser: state.currentUser,
     selectedChannel: state.selectedChannel
   };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ postMessage }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageForm);
